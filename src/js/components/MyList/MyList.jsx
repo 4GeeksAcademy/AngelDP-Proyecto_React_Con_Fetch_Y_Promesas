@@ -5,7 +5,7 @@ import TaskList from '../TaskList/TaskList.jsx';
 const MyList = () => {
 
 
-    // SE DECARAN LOS ESTADOS NECESARIOS SOBRE LA MARCHA.
+    // SE DECLARAN LOS ESTADOS NECESARIOS SOBRE LA MARCHA.
 
     const [allMyTasks, setAllMyTasks] = useState(() => {
         const savedTasks = sessionStorage.getItem('items');
@@ -61,7 +61,7 @@ const MyList = () => {
                 const data = await response.json();
 
 
-                setAllMyTasks(data.slice(0, 5))
+                setAllMyTasks(data.slice(2, 7))
                 setLoading(false);
 
             } catch (error) {
@@ -113,7 +113,7 @@ const MyList = () => {
     //SE CREA UNA FUNCION PARA MANEJAR LA TAREA SELECCIONADA.
 
     const handleSelectedTask = (task) => {
-        setSelectedTask(task); 
+        setSelectedTask(task);
         setInputValue(task.title);
     };
 
@@ -129,7 +129,7 @@ const MyList = () => {
     };
 
 
-    // SE HACE CONTACTO CON EL METODO POST PARA AGREGAR UNA TAREA.
+    // SE HACE CONTACTO CON EL METODO "POST" PARA AGREGAR UNA TAREA.
 
     const handleTask = async (e) => {
 
@@ -157,8 +157,8 @@ const MyList = () => {
 
             const data = await response.json();
 
-            setAllMyTasks([...allMyTasks, { ...data, id: Math.random() * 100 }]);
-            setMessage('We did it!!');
+            setAllMyTasks([...allMyTasks, { ...data, id: Math.floor(Math.random() * 100) }]);
+            setMessage('Task created successfully!!');
             setError(false);
             setInputValue('');
 
@@ -190,7 +190,7 @@ const MyList = () => {
             };
 
             setAllMyTasks(allMyTasks.filter(task => task.id !== taskId));
-            setMessage('Target annihilated');
+            setMessage('Task deleted successfully');
             setError(false);
         } catch (error) {
             setMessage(error.message);
@@ -199,7 +199,7 @@ const MyList = () => {
     };
 
 
-    //SE CEA LA LLAMADA CON EL METODO "PUT" PARA ACTUALIZAR LAS TAREAS.
+    //SE CREA LA LLAMADA CON EL METODO "PUT" PARA ACTUALIZAR LAS TAREAS.
 
     const handleUpdate = async (e) => {
         if (e) e.preventDefault();
@@ -228,7 +228,7 @@ const MyList = () => {
                 throw new Error("Something went wrong while updating the task.");
             }
 
-            const updatedTask = await response.json();
+            
             setMessage("Task updated successfully!");
             setError(false);
 
@@ -246,15 +246,9 @@ const MyList = () => {
         }
     };
 
-    
+
     return (
         <>
-            {showMessage && message && (
-                <div className={`alert ${error ? 'alert-danger' : 'alert-success'}`}>
-                    {message}
-                </div>
-            )}
-
             <InputTask
                 task={inputValue}
                 newValue={handleValue}
@@ -264,10 +258,16 @@ const MyList = () => {
             <TaskList
                 myTaskList={allMyTasks}
                 delete={deleteTask}
-                updateValue={handleSelectedTask}
+                selectTask={handleSelectedTask}
                 update={handleUpdate}
                 selectedTask={selectedTask}
             />
+
+            {showMessage && message && (
+                <div className={`alert ${error ? 'alert-danger' : 'alert-success'}`}>
+                    {message}
+                </div>
+            )}
         </>
     );
 };
