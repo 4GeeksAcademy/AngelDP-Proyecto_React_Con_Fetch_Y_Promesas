@@ -4,6 +4,9 @@ import TaskList from '../TaskList/TaskList.jsx';
 
 const MyList = () => {
 
+
+    // SE DECARAN LOS ESTADOS NECESARIOS SOBRE LA MARCHA.
+
     const [allMyTasks, setAllMyTasks] = useState(() => {
         const savedTasks = sessionStorage.getItem('items');
         return savedTasks ? JSON.parse(savedTasks) : [];
@@ -13,7 +16,6 @@ const MyList = () => {
         sessionStorage.setItem('items', JSON.stringify(allMyTasks))
     }, [allMyTasks]);
 
-
     const [inputValue, setInputValue] = useState('');
 
     const [loading, setLoading] = useState(true);
@@ -22,11 +24,27 @@ const MyList = () => {
 
     const [message, setMessage] = useState('');
 
-    const [body, setBody] = useState('');
+    const [showMessage, setShowMessage] = useState(false);
 
-    /*const msg = useRef(null)*/
+    const [selectedTask, setSelectedTask] = useState(null)
 
 
+    // SE USA UN "USEEFFECT" PARA ACTUALIZAR EL MENSAJE DADO EL CASO NECESARIO.
+
+    useEffect(() => {
+        let timeoutId;
+        if (message) {
+            setShowMessage(true);
+            timeoutId = setTimeout(() => {
+                setShowMessage(false);
+                setMessage('');
+            }, 2000);
+        }
+        return () => clearTimeout(timeoutId);
+    }, [message]);
+
+
+    // SE HACE CONTACTO CON EL METODO "GET" LA BASE DE DATOS Y TRAEMOS LOS PRIMEROS 5.
 
     useEffect(() => {
 
@@ -57,6 +75,7 @@ const MyList = () => {
     }, []);
 
 
+    //MANEJO DE ERROR Y DE PANTALLA DE CARGA.
 
     if (error) {
         return <div className="alert alert-danger">{error}</div>;
@@ -73,13 +92,52 @@ const MyList = () => {
     }
 
 
+    // SE MANEJA EL VALOR DEL INPUT.
+
     const handleValue = (e) => {
         setInputValue(e.target.value);
     };
 
+
+    //SE COMPRUEBA QUE EL VALOR DEL INPUT NO SEA " ".
+
+    const validateInput = () => {
+        if (!inputValue.trim()) {
+            setMessage("You can't create an empty task");
+            return false;
+        }
+        return true;
+    };
+
+
+    //SE CREA UNA FUNCION PARA MANEJAR LA TAREA SELECCIONADA.
+
+    const handleSelectedTask = (task) => {
+        setSelectedTask(task); 
+        setInputValue(task.title);
+    };
+
+
+    // SE CONFIGURA EL EVENTO PARA QUE CUANDO SE PRESIONE "ENTER" SE EJECUTE EL "POST".
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+
+            handleTask(e);
+        }
+    };
+
+
+    // SE HACE CONTACTO CON EL METODO POST PARA AGREGAR UNA TAREA.
+
     const handleTask = async (e) => {
 
         e.preventDefault();
+
+        if (!validateInput()) {
+            return;
+        }
 
         try {
             const response = await fetch('https://jsonplaceholder.typicode.com/posts',
@@ -99,8 +157,8 @@ const MyList = () => {
 
             const data = await response.json();
 
-            setAllMyTasks([...allMyTasks, {...data, id: Math.floor(Math.random() * 100)}]);
-            setMessage('We did it!! ID: ' + data.id);
+            setAllMyTasks([...allMyTasks, { ...data, id: Math.random() * 100 }]);
+            setMessage('We did it!!');
             setError(false);
             setInputValue('');
 
@@ -111,11 +169,8 @@ const MyList = () => {
         };
     };
 
-    const handleKeyDown = (e) => {
-        if(e.key === 'Enter'){
-            handleTask(e);
-        }
-    };
+
+    // SE HACE CONTACTO CON EL METODO "DELETE" PARA ELIMINAR UNA TAREA.
 
     const deleteTask = async (taskId) => {
 
@@ -143,20 +198,59 @@ const MyList = () => {
         }
     };
 
-    /*useEffect(() => {
-        if (msg.current) {
-            const timeoutId = setTimeout(() => {
-                msg.current.style.display = 'none';
-            }, 2000);
 
-            return () => clearTimeout(timeoutId);
+    //SE CEA LA LLAMADA CON EL METODO "PUT" PARA ACTUALIZAR LAS TAREAS.
+
+    const handleUpdate = async (e) => {
+        if (e) e.preventDefault();
+
+        if (!selectedTask) {
+            setMessage("No task selected for update!");
+            return;
         }
-    }, [message]);*/
 
+        try {
+            const response = await fetch(
+                `https://jsonplaceholder.typicode.com/posts/${selectedTask.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: selectedTask.id,
+                        title: inputValue,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Something went wrong while updating the task.");
+            }
+
+            const updatedTask = await response.json();
+            setMessage("Task updated successfully!");
+            setError(false);
+
+            setAllMyTasks(
+                allMyTasks.map((task) =>
+                    task.id === selectedTask.id ? { ...task, title: inputValue } : task
+                )
+            );
+
+            setSelectedTask(null);
+            setInputValue("");
+        } catch (error) {
+            setMessage(error.message);
+            setError(true);
+        }
+    };
+
+    
     return (
         <>
-            {message && (
-                <div /*ref={msg}*/ className={`alert ${error ? 'alert-danger' : 'alert-success'}`}>
+            {showMessage && message && (
+                <div className={`alert ${error ? 'alert-danger' : 'alert-success'}`}>
                     {message}
                 </div>
             )}
@@ -170,9 +264,10 @@ const MyList = () => {
             <TaskList
                 myTaskList={allMyTasks}
                 delete={deleteTask}
+                updateValue={handleSelectedTask}
+                update={handleUpdate}
+                selectedTask={selectedTask}
             />
-
-
         </>
     );
 };

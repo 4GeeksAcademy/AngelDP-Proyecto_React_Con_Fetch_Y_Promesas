@@ -1,12 +1,6 @@
-button {
-    border-radius: 10px;
-    background-color: rgb(255, 0, 0);
-    float: inline-end;
-    width: 1.5em;
-    box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.5);
+.btn {
+    display: none;
 }
-
-
 
 li {
     margin-top: 5px;
@@ -22,14 +16,10 @@ li:hover {
     border-radius: 5px;
     cursor: pointer;
     box-shadow: 5px 5px 8px 0px rgba(0, 0, 0, 2);
-    background-color: rgb(29, 133, 15);
+    background-color: rgb(30, 163, 187);
 }
 
-li button {
-    display: none;
-}
-
-li:hover button {
+li:hover .btn {
     display: inline-block;
 }
 
