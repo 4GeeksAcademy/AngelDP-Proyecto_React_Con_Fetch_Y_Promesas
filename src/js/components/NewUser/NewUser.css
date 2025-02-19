@@ -21,7 +21,7 @@
 
 .new-user button {
     padding: 0.8rem 1.5rem;
-    background: #007bff;
+    background: #3aa815;
     color: white;
     border: none;
     border-radius: 8px;
@@ -31,7 +31,7 @@
 }
 
 .new-user button:hover {
-    background: #0056b3;
+    background: #1f9510;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
