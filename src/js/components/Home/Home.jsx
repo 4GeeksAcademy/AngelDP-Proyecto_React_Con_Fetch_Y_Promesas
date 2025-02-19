@@ -4,8 +4,9 @@ import "./Home.css";
 
 const Home = () => {
     return (
-        <div className='container'>
+        <div className="container-fluid py-5">
             <div className='home-container'>
+                <h1 className="text-center mb-4">✓ Task Manager</h1>
                 <MyList />
             </div>
         </div>

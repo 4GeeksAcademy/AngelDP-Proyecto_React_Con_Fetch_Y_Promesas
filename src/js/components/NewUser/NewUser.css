@@ -1,25 +1,37 @@
 .new-user {
+    margin-bottom: 2rem;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 1rem;
+    align-items: center;
 }
 
 .new-user input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border: 1px solid black;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.new-user input:focus {
+    outline: none;
+    border-color: green;
 }
 
 .new-user button {
-    padding: 10px;
-    background-color: #007bff;
+    padding: 0.8rem 1.5rem;
+    background: #007bff;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .new-user button:hover {
-    background-color: #0056b3;
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }

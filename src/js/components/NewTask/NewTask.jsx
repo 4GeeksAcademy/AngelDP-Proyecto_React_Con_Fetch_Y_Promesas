@@ -14,7 +14,7 @@ const NewTask = (props) => {
             const timer = setTimeout(() => {
                 setNewTaskMessage("");
                 setNewTaskError(false);
-            }, 2000); 
+            }, 2000);
 
             return () => clearTimeout(timer);
         }
@@ -57,7 +57,7 @@ const NewTask = (props) => {
             if (props.onTaskAdded) {
                 props.onTaskAdded();
             }
-            
+
         } catch (error) {
             setNewTaskMessage(error.message);
             setNewTaskError(true);
@@ -76,11 +76,12 @@ const NewTask = (props) => {
             />
 
             <button onClick={handleNewTask}>Agregar tarea</button>
+
+            <button onClick={props.onDeleteAllTasks}>Borrar tareas</button>
+
             {newTaskMessage && (
                 <p style={{ color: newTaskError ? "red" : "green" }}>{newTaskMessage}</p>
             )}
-
-            <button onClick={props.onDeleteAllTasks}>Borrar tareas</button>
 
         </div>
     );

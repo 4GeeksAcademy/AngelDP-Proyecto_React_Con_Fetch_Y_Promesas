@@ -1,9 +1,54 @@
 .mylist-container {
-    padding: 20px;
-    background: rgb(250, 249, 249);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    margin: auto;
-    
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-top: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.mylist-container h3 {
+    color: #1f2d3a;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.mylist-container h4 {
+    color: #1f2d3a;
+    font-size: 1.2rem;
+    margin: 1.5rem 0 1rem;
+    font-weight: 500;
+}
+
+.mylist-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.mylist-container li {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.mylist-container li:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.mylist-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+p {
+    font-size: 1.2rem;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }

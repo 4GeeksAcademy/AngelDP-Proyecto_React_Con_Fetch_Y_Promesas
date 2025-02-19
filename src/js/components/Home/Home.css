@@ -1,12 +1,9 @@
 .home-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-height: 100vh;
-    padding: 5%;
-    margin: 10%;
-    border-radius: 5px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: rgb(9, 8, 8);
-    font-family: 'Poppins', sans-serif;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: linear-gradient(145deg, #9c55cf, #530e71);
+    border-radius: 20px;
+    border: 1px solid;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 2);
 }

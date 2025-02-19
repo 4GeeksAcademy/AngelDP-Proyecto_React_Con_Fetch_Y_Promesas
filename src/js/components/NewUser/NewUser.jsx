@@ -1,10 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./NewUser.css";
 
 const NewUser = (props) => {
     const [userName, setUserName] = useState("");
     const [newUserMessage, setNewUserMessage] = useState("");
     const [newUserError, setNewUserError] = useState(false);
+
+    useEffect(() => {
+            if (newUserMessage) {
+                const timer = setTimeout(() => {
+                    setNewUserMessage("");
+                    setNewUserError(false);
+                }, 2000); 
+    
+                return () => clearTimeout(timer);
+            }
+        }, [newUserMessage]);
 
     const handleNewUser = async (e) => {
         e.preventDefault();
@@ -31,7 +42,7 @@ const NewUser = (props) => {
             }
 
 
-            const newUser = await response.json();
+            await response.json();
 
             setNewUserMessage("Usuario creado con éxito!");
             setNewUserError(false);

@@ -1,17 +1,20 @@
-.users-list {
-    margin: 20px 0;
-}
-
 .form-select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
+    width: 90%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #e9ecef;
     border-radius: 8px;
-    font-size: 16px;
-    background-color: #f8f9fa;
-    transition: background-color 0.3s;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.form-select:hover {
-    background-color: #e9ecef;
+.form-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-select option {
+    padding: 0.8rem;
 }

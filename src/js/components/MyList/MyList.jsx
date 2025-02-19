@@ -110,14 +110,14 @@ const MyList = () => {
     };
 
     const handleTaskAdded = () => {
-        fetchLabel(); // 
+        fetchLabel();
     };
 
 
 
     const handleDelete = async (e) => {
         try {
-            
+
             await Promise.all(tasks.map(async (task) => {
                 const response = await fetch(
                     `https://playground.4geeks.com/todo/todos/${task.id}`, {
@@ -134,8 +134,8 @@ const MyList = () => {
             setError(null);
 
             fetchLabel();
-            
-        }catch(error){
+
+        } catch (error) {
             setError(error.message)
         }
 
@@ -157,29 +157,31 @@ const MyList = () => {
             {selectedUser && (
                 <div className='mylist-container'>
                     <h3>Usuario seleccionado:</h3>
-                    <p>Nombre: {selectedUser.name}</p>
+                    <p>{selectedUser.name}</p>
                     <p>Id: {selectedUser.id}</p>
                     <h4>Tareas del usuario:</h4>
                     {tasks.length > 0 ? (
-                        <ul>
+                        <ul className="task-list">
                             {tasks.map((task) => (
-                                <li key={task.id}>
-                                    <input
-                                        type="checkbox"
-                                        checked={task.is_done}
-                                        onChange={() => handleToggleTask(task.id, task.is_done)}
-                                    />
-                                    <span style={{
-                                        textDecoration: task.is_done ? 'line-through' : 'none',
-                                        marginLeft: '8px'
-                                    }}>
-                                        {task.label}
-                                    </span>
+                                <li key={task.id} className="task-item">
+                                    <div className="d-flex align-items-center w-100">
+                                        <input
+                                            type="checkbox"
+                                            checked={task.is_done}
+                                            onChange={() => handleToggleTask(task.id, task.is_done)}
+                                            className="task-checkbox"
+                                        />
+                                        <span className={`task-label ${task.is_done ? 'completed' : ''}`}>
+                                            {task.label}
+                                        </span>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
                     ) : (
-                        <p>No hay tareas para este usuario</p>
+                        <div className="text-center py-4">
+                            <p className="text-muted">No hay tareas para este usuario</p>
+                        </div>
                     )}
                     <NewTask
                         tasks={tasks}
