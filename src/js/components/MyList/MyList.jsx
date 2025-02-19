@@ -1,271 +1,192 @@
-import React, { useEffect, useRef, useState } from 'react';
-import InputTask from '../InputTask/InputTask.jsx';
-import TaskList from '../TaskList/TaskList.jsx';
+import React, { useEffect, useState } from 'react';
+import UsersList from '../UsersList/UsersList.jsx';
+import NewUser from '../NewUser/NewUser.jsx';
+import NewTask from '../NewTask/NewTask.jsx';
+import "./MyList.css";
 
 const MyList = () => {
 
-
-    // SE DECLARAN LOS ESTADOS NECESARIOS SOBRE LA MARCHA.
-
-    const [allMyTasks, setAllMyTasks] = useState(() => {
-        const savedTasks = sessionStorage.getItem('items');
-        return savedTasks ? JSON.parse(savedTasks) : [];
-    });
-
-    useEffect(() => {
-        sessionStorage.setItem('items', JSON.stringify(allMyTasks))
-    }, [allMyTasks]);
-
-    const [inputValue, setInputValue] = useState('');
-
+    const [users, setUsers] = useState([]);
+    const [tasks, setTasks] = useState([]);
+    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    const [error, setError] = useState(false);
-
-    const [message, setMessage] = useState('');
-
-    const [showMessage, setShowMessage] = useState(false);
-
-    const [selectedTask, setSelectedTask] = useState(null)
+    const [selectedUser, setSelectedUser] = useState(null);
 
 
-    // SE USA UN "USEEFFECT" PARA ACTUALIZAR EL MENSAJE DADO EL CASO NECESARIO.
-
-    useEffect(() => {
-        let timeoutId;
-        if (message) {
-            setShowMessage(true);
-            timeoutId = setTimeout(() => {
-                setShowMessage(false);
-                setMessage('');
-            }, 2000);
-        }
-        return () => clearTimeout(timeoutId);
-    }, [message]);
 
 
-    // SE HACE CONTACTO CON EL METODO "GET" LA BASE DE DATOS Y TRAEMOS LOS PRIMEROS 5.
-
-    useEffect(() => {
-
-        const fetchDocs = async () => {
-            try {
-                const response = await fetch(
-                    'https://jsonplaceholder.typicode.com/posts'
-                );
-
-                if (!response.ok) {
-                    throw new Error('Houston we have a problem!!')
-                }
-
-                const data = await response.json();
-
-
-                setAllMyTasks(data.slice(2, 7))
-                setLoading(false);
-
-            } catch (error) {
-                setError(error.message);
-                setLoading(false);
-            };
-        };
-
-        fetchDocs();
-
-    }, []);
-
-
-    //MANEJO DE ERROR Y DE PANTALLA DE CARGA.
-
-    if (error) {
-        return <div className="alert alert-danger">{error}</div>;
-    }
-
-    if (loading) {
-        return (
-            <div className="d-flex justify-content-center">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                </div>
-            </div>
-        );
-    }
-
-
-    // SE MANEJA EL VALOR DEL INPUT.
-
-    const handleValue = (e) => {
-        setInputValue(e.target.value);
-    };
-
-
-    //SE COMPRUEBA QUE EL VALOR DEL INPUT NO SEA " ".
-
-    const validateInput = () => {
-        if (!inputValue.trim()) {
-            setMessage("You can't create an empty task");
-            return false;
-        }
-        return true;
-    };
-
-
-    //SE CREA UNA FUNCION PARA MANEJAR LA TAREA SELECCIONADA.
-
-    const handleSelectedTask = (task) => {
-        setSelectedTask(task);
-        setInputValue(task.title);
-    };
-
-
-    // SE CONFIGURA EL EVENTO PARA QUE CUANDO SE PRESIONE "ENTER" SE EJECUTE EL "POST".
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-
-            handleTask(e);
-        }
-    };
-
-
-    // SE HACE CONTACTO CON EL METODO "POST" PARA AGREGAR UNA TAREA.
-
-    const handleTask = async (e) => {
-
-        e.preventDefault();
-
-        if (!validateInput()) {
-            return;
-        }
-
-        try {
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title: inputValue,
-                    }),
-                });
-
-            if (!response.ok) {
-                throw new Error('Something went wrong');
-            }
-
-            const data = await response.json();
-
-            setAllMyTasks([...allMyTasks, { ...data, id: Math.floor(Math.random() * 100) }]);
-            setMessage('Task created successfully!!');
-            setError(false);
-            setInputValue('');
-
-
-        } catch (error) {
-            setMessage(error.message)
-            setError(true)
-        };
-    };
-
-
-    // SE HACE CONTACTO CON EL METODO "DELETE" PARA ELIMINAR UNA TAREA.
-
-    const deleteTask = async (taskId) => {
-
-        if (!window.confirm('Are you sure?')) {
-            return
-        }
-
-        try {
-            const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${taskId}`,
-                {
-                    method: 'DELETE',
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error('Something went wrong in the execution');
-            };
-
-            setAllMyTasks(allMyTasks.filter(task => task.id !== taskId));
-            setMessage('Task deleted successfully');
-            setError(false);
-        } catch (error) {
-            setMessage(error.message);
-            setError(true);
-        }
-    };
-
-
-    //SE CREA LA LLAMADA CON EL METODO "PUT" PARA ACTUALIZAR LAS TAREAS.
-
-    const handleUpdate = async (e) => {
-        if (e) e.preventDefault();
-
-        if (!selectedTask) {
-            setMessage("No task selected for update!");
-            return;
-        }
+    const fetchUsers = async () => {
 
         try {
             const response = await fetch(
-                `https://jsonplaceholder.typicode.com/posts/${selectedTask.id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        id: selectedTask.id,
-                        title: inputValue,
-                    }),
-                }
+                'https://playground.4geeks.com/todo/users'
             );
 
             if (!response.ok) {
-                throw new Error("Something went wrong while updating the task.");
+                throw new Error("No hemos podido cargar los usuarios.")
             }
 
-            
-            setMessage("Task updated successfully!");
-            setError(false);
+            const data = await response.json();
+            console.log(data)
+            setUsers(data.users);
+            setLoading(false);
+        } catch (error) {
+            setError(error.message);
+            setLoading(false);
+        };
+    };
 
-            setAllMyTasks(
-                allMyTasks.map((task) =>
-                    task.id === selectedTask.id ? { ...task, title: inputValue } : task
-                )
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+
+
+    const fetchLabel = async () => {
+
+        try {
+            const response = await fetch(
+                `https://playground.4geeks.com/todo/users/${selectedUser.name}`
             );
 
-            setSelectedTask(null);
-            setInputValue("");
+            if (!response.ok) {
+                throw new Error("No hemos podido cargar las tareas.")
+            }
+
+            const data = await response.json();
+            console.log(data)
+            setTasks(data.todos);
+
         } catch (error) {
-            setMessage(error.message);
-            setError(true);
+            setError(error.message);
+            setTasks("");
         }
+    }
+
+
+    const handleToggleTask = async (taskId, currentStatus) => {
+        try {
+            const response = await fetch(
+                `https://playground.4geeks.com/todo/todos/${taskId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    is_done: !currentStatus
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("No hemos podido actualizar el estado.")
+            }
+
+            fetchLabel();
+            setError(false);
+
+        } catch (error) {
+            setError(true)
+        }
+    }
+
+
+
+
+    useEffect(() => {
+        if (selectedUser) {
+            fetchLabel();
+        }
+    }, [selectedUser]);
+
+
+    const handleUserAdded = () => {
+        fetchUsers();
     };
+
+    const handleUserSelect = (user) => {
+        setSelectedUser(user);
+        console.log('Usuario seleccionado:', user);
+
+    };
+
+    const handleTaskAdded = () => {
+        fetchLabel(); // 
+    };
+
+
+
+    const handleDelete = async (e) => {
+        try {
+            
+            await Promise.all(tasks.map(async (task) => {
+                const response = await fetch(
+                    `https://playground.4geeks.com/todo/todos/${task.id}`, {
+                    method: "DELETE",
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error al eliminar la tarea con id ${task.id}`);
+                }
+            }));
+
+
+            setTasks([]);
+            setError(null);
+
+            fetchLabel();
+            
+        }catch(error){
+            setError(error.message)
+        }
+
+    }
+
+
 
 
     return (
         <>
-            <InputTask
-                task={inputValue}
-                newValue={handleValue}
-                sendTask={handleKeyDown}
+            <NewUser userAdded={handleUserAdded} />
+            <UsersList
+                users={users}
+                loading={loading}
+                error={error}
+                onUserSelect={handleUserSelect}
             />
 
-            <TaskList
-                myTaskList={allMyTasks}
-                delete={deleteTask}
-                selectTask={handleSelectedTask}
-                update={handleUpdate}
-                selectedTask={selectedTask}
-            />
-
-            {showMessage && message && (
-                <div className={`alert ${error ? 'alert-danger' : 'alert-success'}`}>
-                    {message}
+            {selectedUser && (
+                <div className='mylist-container'>
+                    <h3>Usuario seleccionado:</h3>
+                    <p>Nombre: {selectedUser.name}</p>
+                    <p>Id: {selectedUser.id}</p>
+                    <h4>Tareas del usuario:</h4>
+                    {tasks.length > 0 ? (
+                        <ul>
+                            {tasks.map((task) => (
+                                <li key={task.id}>
+                                    <input
+                                        type="checkbox"
+                                        checked={task.is_done}
+                                        onChange={() => handleToggleTask(task.id, task.is_done)}
+                                    />
+                                    <span style={{
+                                        textDecoration: task.is_done ? 'line-through' : 'none',
+                                        marginLeft: '8px'
+                                    }}>
+                                        {task.label}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No hay tareas para este usuario</p>
+                    )}
+                    <NewTask
+                        tasks={tasks}
+                        selectedUser={selectedUser}
+                        onTaskAdded={handleTaskAdded}
+                        onDeleteAllTasks={handleDelete}
+                    />
                 </div>
             )}
         </>

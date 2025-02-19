@@ -1,0 +1,17 @@
+.users-list {
+    margin: 20px 0;
+}
+
+.form-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s;
+}
+
+.form-select:hover {
+    background-color: #e9ecef;
+}
