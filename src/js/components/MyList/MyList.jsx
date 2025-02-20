@@ -12,9 +12,6 @@ const MyList = () => {
     const [loading, setLoading] = useState(true);
     const [selectedUser, setSelectedUser] = useState(null);
 
-
-
-
     const fetchUsers = async () => {
 
         try {
@@ -39,8 +36,6 @@ const MyList = () => {
     useEffect(() => {
         fetchUsers();
     }, []);
-
-
 
     const fetchLabel = async () => {
 
@@ -106,7 +101,6 @@ const MyList = () => {
     const handleUserSelect = (user) => {
         setSelectedUser(user);
         console.log('Usuario seleccionado:', user);
-
     };
 
     const handleTaskAdded = () => {
@@ -146,7 +140,7 @@ const MyList = () => {
 
     return (
         <>
-            <NewUser userAdded={handleUserAdded} />
+            <NewUser userAdded={handleUserAdded} onNewUser={handleUserSelect} />
             <UsersList
                 users={users}
                 loading={loading}
@@ -156,9 +150,9 @@ const MyList = () => {
 
             {selectedUser && (
                 <div className='mylist-container'>
-                    <h3>Usuario seleccionado:</h3>
-                    <p>{selectedUser.name}</p>
-                    <p>Id: {selectedUser.id}</p>
+                    <div className='d-flex align-items-center'>
+                        <h3>Usuario seleccionado: {selectedUser.name.charAt(0).toUpperCase() + selectedUser.name.slice(1)}</h3>
+                    </div>
                     <h4>Tareas del usuario:</h4>
                     {tasks.length > 0 ? (
                         <ul className="task-list">
