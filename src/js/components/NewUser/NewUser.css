@@ -1,5 +1,11 @@
-.new-user {
+.new-user-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     margin-bottom: 2rem;
+}
+
+.new-user {
     display: flex;
     gap: 1rem;
     align-items: center;
@@ -34,4 +40,8 @@
     background: #1f9510;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.message {
+    margin-left: 0.5rem;
 }

@@ -73,6 +73,7 @@ const NewTask = (props) => {
                 placeholder="Nueva tarea : "
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleNewTask(e)}
             />
 
             <button onClick={handleNewTask}>Agregar tarea</button>

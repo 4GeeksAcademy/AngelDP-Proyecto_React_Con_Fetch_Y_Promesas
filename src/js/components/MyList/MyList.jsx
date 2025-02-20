@@ -99,8 +99,9 @@ const MyList = () => {
     }, [selectedUser]);
 
 
-    const handleUserAdded = () => {
+    const handleUserAdded = (newUser) => {
         fetchUsers();
+        setSelectedUser(newUser);
     };
 
     const handleUserSelect = (user) => {
@@ -141,9 +142,6 @@ const MyList = () => {
 
     }
 
-
-
-
     return (
         <>
             <NewUser userAdded={handleUserAdded} />
@@ -156,9 +154,8 @@ const MyList = () => {
 
             {selectedUser && (
                 <div className='mylist-container'>
-                    <h3>Usuario seleccionado:</h3>
-                    <p>{selectedUser.name}</p>
-                    <p>Id: {selectedUser.id}</p>
+                    <h2><strong>{selectedUser.name.charAt(0).toUpperCase() + selectedUser.name.slice(1).toLowerCase()}</strong></h2>
+                    <p></p>
                     <h4>Tareas del usuario:</h4>
                     {tasks.length > 0 ? (
                         <ul className="task-list">
@@ -171,6 +168,7 @@ const MyList = () => {
                                             onChange={() => handleToggleTask(task.id, task.is_done)}
                                             className="task-checkbox"
                                         />
+                                        
                                         <span className={`task-label ${task.is_done ? 'completed' : ''}`}>
                                             {task.label}
                                         </span>

@@ -7,15 +7,15 @@ const NewUser = (props) => {
     const [newUserError, setNewUserError] = useState(false);
 
     useEffect(() => {
-            if (newUserMessage) {
-                const timer = setTimeout(() => {
-                    setNewUserMessage("");
-                    setNewUserError(false);
-                }, 2000); 
-    
-                return () => clearTimeout(timer);
-            }
-        }, [newUserMessage]);
+        if (newUserMessage) {
+            const timer = setTimeout(() => {
+                setNewUserMessage("");
+                setNewUserError(false);
+            }, 2000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [newUserMessage]);
 
     const handleNewUser = async (e) => {
         e.preventDefault();
@@ -48,10 +48,10 @@ const NewUser = (props) => {
             setNewUserError(false);
             setUserName("");
 
-            if(props.userAdded) {
-                props.userAdded();
+            if (props.userAdded) {
+                props.userAdded({ name: userName });
             }
-            
+
         } catch (error) {
             setNewUserMessage("Error: " + error.message);
             setNewUserError(true);
@@ -59,16 +59,22 @@ const NewUser = (props) => {
     };
 
     return (
-        <div className="new-user">
-            <input
-                type="text"
-                placeholder="Nombre del usuario"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-            />
-            <button onClick={handleNewUser}>Agregar usuario</button>
+        <div className="new-user-container">
+            <div className="new-user">
+                <input
+                    type="text"
+                    placeholder="Nombre del usuario"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleNewUser(e)}
+                />
+                <button onClick={handleNewUser}>Agregar usuario</button>
+            </div>
+
             {newUserMessage && (
-                <p style={{ color: newUserError ? "red" : "green" }}>{newUserMessage}</p>
+                <p className="message" style={{ color: newUserError ? "red" : "green" }}>
+                    {newUserMessage}
+                </p>
             )}
         </div>
     );
